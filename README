@@ -4,4 +4,3 @@ This scripts allows to use / share buffers over multiple, clientserver-enabled v
 Especially, the :BCbuffer command allows to "steal" a buffer which is opened in another vim.
 
 The file bcbuf.vim provides further documentation.
- 
