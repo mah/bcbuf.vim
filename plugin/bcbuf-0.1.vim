@@ -1,8 +1,6 @@
 " bcbuf.vim
 " Name: Broadcast Buffer Operations
-" Version: 0.1
-" Author: Mark Hillebrand <dazzler@users.sf.net>, 20020201
-" Last Change: Mon 04 Feb 2002 07:34:44 PM CET
+" Author: Mark Hillebrand (https://github.com/mah)
 " 
 " Overview: this script provides functions to share / use buffers over
 " multiple vim's (via clientserver communication, see :help +clientserver).
