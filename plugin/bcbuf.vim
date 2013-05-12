@@ -20,8 +20,8 @@
 "     No servername needs to be supplied since this command initiates a
 "     broadcast to all other vim servers.
 "     Please note, that the argument of :BCb is, in contrast to the
-"     regulare :buf command *always* interpreted as a filename and not
-"     possibly as a regulare expressions or a buffer number.
+"     regular :buf command *always* interpreted as a filename and never
+"     as a regular expressions or a buffer number.
 "
 "    Why only pass modifiable buffers? Because you may open a buffer
 "    read-only / not modifiable by using the standard :view and :sview
@@ -39,7 +39,7 @@
 "
 " Both :BCtossbuf and :BCb employ the vim command :mkview to pass around the
 " buffers, so in addition to the cursor position quite a lot of other
-" information (e.g. the fold status) is preserverd.
+" information (e.g. the fold status) is preserved.
 " See :help :mkview for documentation on this.
 "
 " To get a list of all running servers:
@@ -49,9 +49,9 @@
 " Pitfalls:
 " -  be sure that all participating vim's are invoked as servers.
 "    gvim's usually are by default; for a console vim use the invocation
-"    'vim --servername SOMENAME'. For vim servers to work under unix, X must
-"    be running and vim must be compiled with the +clientserver feature turned
-"    on.
+"    'vim --servername SOMENAME'. For vim servers to work under Unix, an X
+"    server must be running and vim must be compiled with the +clientserver
+"    feature turned on.
 "
 " Bugs:
 " - strange paths containing '/../' somewhere in the middle do not yet work as
@@ -95,7 +95,7 @@ fun! <SID>Stealbuf(name)
     echo "No file " . a:name . ", why look for its buffer in another vim?"
     return
   endif
-  " up to now I know that name doesnt contain the home directory via ~
+  " up to now I know that name doesn't contain the home directory via ~
   " name may still be relative though, I don't want this
   let name = fnamemodify(name,":p")
 
@@ -138,17 +138,17 @@ endfun
 fun! Givemeview(name)
   " Givemeview() gets called from a remote vim via the <SID>Stealbuf()
   " function
-  " It is passed the name of an existing, modifiable but nonmodified buffer
+  " It is passed the name of an existing, modifiable but unmodified buffer
   " It must change the window to that buffer (or create a window for that
   " buffer), make an :mkview in a temporary file and return the filename
-  " TODO have to think about how to plugginfy this function, the remote vims
-  " must know the <SID> / <SNR> in order to call it...
+  " TODO have to think about how to properly scope this function, the remote
+  " vims must know the <SID> / <SNR> in order to call it...
   " TODO *If* the calling vim runs on a different user this probably won't work
   " because of the access rights
   " Note: this function is internal only
   let windownr = bufwinnr(a:name)
   if windownr < 0 
-    " check if the following always worx:
+    " check if the following always works:
     exec "sbuf " . a:name
     let windownr = winnr()
   else
@@ -164,6 +164,7 @@ fun! Givemeview(name)
   return viewname
 endfun
 
+" TODO bug: if there is no server, temp file does not get created and cat/type fails
 fun! <SID>BCbuffers()
   " Description: show a buffer listing from the local vim and all remote vim servers
   let serverlist = serverlist()
@@ -192,6 +193,6 @@ endfun
 com! -nargs=0 BCbuffers call <SID>BCbuffers()
 com! -nargs=0 BCls call <SID>BCbuffers()
 com! -nargs=1 BCtossbuf call <SID>Tossbuf(<f-args>)
-  " TODO ^ would like to complete with servername's if that were possible
+" TODO ^ would like to complete with servernames
 com! -nargs=1 -complete=file BCb call <SID>Stealbuf(<f-args>)
 com! -nargs=1 -complete=file BCbuffer call <SID>Stealbuf(<f-args>)
